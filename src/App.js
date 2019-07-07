@@ -7,6 +7,8 @@ import zhCN from 'antd/lib/locale-provider/zh_CN';
 import moment from "moment";
 import 'moment/locale/zh-cn';
 
+import {MyPageOne} from "./Page/MyPageOne";
+
 import "antd/dist/antd.css";
 import "./App.css"
 import $ from 'jquery'
@@ -82,7 +84,7 @@ class Container extends React.Component {
             case 2:
                 return (
                     <div>
-                        <PageLoader defaultPage={"title2"} />
+                        <PageLoader defaultPage={"MyPageOne"} />
                     </div>
                 );
             default:
@@ -175,6 +177,9 @@ class PageLoader extends React.Component {
 
     render() {
         const testData = [
+            {key:"MyPage",icon:"table",title:"MyPage",child:[
+                    {key:"MyPageOne",title:"MyPageOne"}
+                ]},
             {key:"menu1",icon:"table",title:"Menu1",child:[
                     {key:"title1",title:"Title1"},
                     {key:"title2",title:"Title2"},
@@ -286,6 +291,10 @@ class PageContent extends React.Component {
             case "222":
                 return (
                     <div>222</div>
+                );
+            case "MyPageOne":
+                return (
+                    <MyPageOne/>
                 );
             default:
                 return (
