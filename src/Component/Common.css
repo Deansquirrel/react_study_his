@@ -27,3 +27,8 @@
 .clear {
     clear: both;
 }
+
+.divColor {
+    width: 200px;
+    height: 50px;
+}

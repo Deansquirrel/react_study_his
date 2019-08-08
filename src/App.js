@@ -8,6 +8,7 @@ import moment from "moment";
 import 'moment/locale/zh-cn';
 
 import {MyPageOne} from "./Page/MyPageOne";
+import {MyPage0001} from "./Page/MyPage0001";
 
 import "antd/dist/antd.css";
 import "./App.css"
@@ -18,6 +19,10 @@ import $ from 'jquery'
 const versionInfo = "0.0.0 Build20190101";
 function getCurrVersion() {
     return versionInfo
+}
+
+function getDefaultPage(){
+    return "MyPage0001"
 }
 
 moment.locale('zh-cn');
@@ -74,6 +79,7 @@ class Container extends React.Component {
     };
 
     render(){
+        const defaultPage = getDefaultPage();
         switch (this.state.showPage) {
             case 1:
                 return (
@@ -84,7 +90,7 @@ class Container extends React.Component {
             case 2:
                 return (
                     <div>
-                        <PageLoader defaultPage={"MyPageOne"} />
+                        <PageLoader defaultPage={defaultPage} />
                     </div>
                 );
             default:
@@ -178,7 +184,8 @@ class PageLoader extends React.Component {
     render() {
         const testData = [
             {key:"MyPage",icon:"table",title:"MyPage",child:[
-                    {key:"MyPageOne",title:"MyPageOne"}
+                    {key:"MyPageOne",title:"MyPageOne"},
+                    {key:"MyPage0001",title:"MyPage0001"}
                 ]},
             {key:"menu1",icon:"table",title:"Menu1",child:[
                     {key:"title1",title:"Title1"},
@@ -295,6 +302,10 @@ class PageContent extends React.Component {
             case "MyPageOne":
                 return (
                     <MyPageOne/>
+                );
+            case "MyPage0001":
+                return (
+                    <MyPage0001/>
                 );
             default:
                 return (
