@@ -9,8 +9,8 @@ import 'moment/locale/zh-cn';
 
 import {MyPageOne} from "./Page/MyPageOne";
 import {MyPage0001} from "./Page/MyPage0001";
+import {MyPage0002} from "./Page/MyPage0002";
 
-import "antd/dist/antd.css";
 import "./App.css"
 import $ from 'jquery'
 
@@ -22,7 +22,7 @@ function getCurrVersion() {
 }
 
 function getDefaultPage(){
-    return "MyPage0001"
+    return "MyPage0002"
 }
 
 moment.locale('zh-cn');
@@ -185,7 +185,8 @@ class PageLoader extends React.Component {
         const testData = [
             {key:"MyPage",icon:"table",title:"MyPage",child:[
                     {key:"MyPageOne",title:"MyPageOne"},
-                    {key:"MyPage0001",title:"MyPage0001"}
+                    {key:"MyPage0001",title:"MyPage0001"},
+                    {key:"MyPage0002",title:"MyPage0002"}
                 ]},
             {key:"menu1",icon:"table",title:"Menu1",child:[
                     {key:"title1",title:"Title1"},
@@ -306,6 +307,10 @@ class PageContent extends React.Component {
             case "MyPage0001":
                 return (
                     <MyPage0001/>
+                );
+            case "MyPage0002":
+                return (
+                    <MyPage0002/>
                 );
             default:
                 return (
