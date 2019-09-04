@@ -1,21 +1,69 @@
-import C from "constants"
+import C from "./constants"
+import {GetMenuOpenKeys, GetMenuSelectedKeys} from "./common";
 
-export const collapsed = (state=false,action={}) => {
+export const managerState = (state={},action={}) => {
     switch (action.type) {
+        case C.Loading:
+            return {
+                ...state,
+                loading:!state.loading,
+            };
         case C.Collapsed:
-            return !state;
+            return {
+                ...state,
+                collapsed:!state.collapsed,
+            };
+        case C.CurrPage:
+            return {
+                ...state,
+                currPage:action.currPage,
+            };
+        case C.Version:
+            return {
+                ...state,
+                version:action.version,
+            };
+        case C.WsVersion:
+            return {
+                ...state,
+                wsVersion:action.wsVersion,
+            };
+        case C.MenuNewData:
+            return {
+                ...state,
+                menuData:menuData(state.menuData,action)
+            };
+        case C.MenuClick:
+            return {
+                ...state,
+                currPage: action.page,
+                menuData:menuData(state.menuData,action)
+            };
         default:
             return state;
     }
 };
 
-export const currPage = (state="",action={}) => {
-    console.log("r");
-    console.log(action.page);
-
+const menuData = (state={},action={}) => {
     switch (action.type) {
-        case C.CurrPage:
-            return action.page;
+        case C.MenuNewData:
+            const selectedKeys = GetMenuSelectedKeys(action.menu);
+            const openKeys = GetMenuOpenKeys(action.menu);
+            return {
+                ...state,
+                menu:action.menu,
+                openKeys:openKeys,
+                selectedKeys:selectedKeys,
+            };
+        case C.MenuClick:
+            const selectedKeysChange = GetMenuSelectedKeys(state.menu,action.page);
+            const openKeysChange = GetMenuOpenKeys(state.menu,action.page);
+            return {
+                ...state,
+                menu:state.menu,
+                openKeys:openKeysChange,
+                selectedKeys:selectedKeysChange,
+            };
         default:
             return state;
     }
