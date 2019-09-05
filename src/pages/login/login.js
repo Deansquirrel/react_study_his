@@ -1,17 +1,18 @@
 import React, {Component} from "react";
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 // import { Form,Icon, Input,Button } from 'antd';
+import { Button } from 'antd';
 import "./login.css"
 
-class Login extends Component {
+export class Login extends Component {
 
-    static propTypes = {
-        handleLogin:PropTypes.func,
-    };
-
-    static defaultProps = {
-        handleLoginSuccess:f=>f,
-    };
+    // static propTypes = {
+    //     handleLogin:PropTypes.func,
+    // };
+    //
+    // static defaultProps = {
+    //     handleLoginSuccess:f=>f,
+    // };
 
     render() {
         return (
@@ -24,6 +25,7 @@ class Login extends Component {
                 {/*<div className={"VersionInfo"} style={{color:'white'}}>*/}
                 {/*    <span>0.0.0 Build20190101</span>*/}
                 {/*</div>*/}
+                <Button type={"primary"} onClick={()=>this.props.handleLogin("user","pwd")}>Button</Button>
             </div>
         )
     }

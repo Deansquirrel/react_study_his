@@ -28,6 +28,11 @@ export const managerState = (state={},action={}) => {
                 ...state,
                 wsVersion:action.wsVersion,
             };
+        case C.WsAddress:
+            return {
+                ...state,
+                wsAddress: action.address,
+            };
         case C.MenuNewData:
             return {
                 ...state,
@@ -38,6 +43,11 @@ export const managerState = (state={},action={}) => {
                 ...state,
                 currPage: action.page,
                 menuData:menuData(state.menuData,action)
+            };
+        case C.HandleLogout:
+            return {
+                ...state,
+                handleLogout:action.handleLogout,
             };
         default:
             return state;

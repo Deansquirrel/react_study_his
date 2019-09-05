@@ -1,21 +1,25 @@
 import React, {Component} from "react";
+import PropTypes from 'prop-types';
 import {combineReducers,createStore} from "redux";
 
 import "./manager.css"
 import "../../App.css"
 import {Button,Layout,Icon,Menu} from "antd";
 
+import sysConfig from "../../config";
+
 import {managerState} from "./reducer";
 import {
-    CollapsedAction,
+    CollapsedAction, HandleLogoutAction,
     LoadingAction,
     MenuClickAction,
     MenuNewDataAction,
-    VersionAction,
+    VersionAction, WsAddressAction,
     WsVersionAction
 } from "./actions";
 import {Welcome} from "../welcome/welcome";
 import {Test} from "../test/test";
+import {GetWsVersionInfo} from "../DataInterface/common";
 
 const { Header, Sider, Content } = Layout;
 const { SubMenu } = Menu;
@@ -24,14 +28,16 @@ const defaultState = {
     managerState:{
         loading:true,
         collapsed: false,
-        currPage:"testPage0101",
+        currPage:"",
         version:"",
         wsVersion:"",
+        wsAddress:"",
         menuData:{
             menu:[],
             openKeys:[],
             selectedKeys:[],
         },
+        handleLogout:f=>f,
     },
 };
 
@@ -42,10 +48,22 @@ const store = createStore(
 
 
 export class Manager extends Component {
+    static propTypes = {
+        wsAddress:PropTypes.string,
+        handleLogout:PropTypes.func,
+    };
+
+    static defaultProps = {
+        wsAddress:"",
+        handleLogout:f=>f,
+    };
 
     componentDidMount() {
-        store.dispatch(VersionAction("0.0.0 Build20190101"));
-        store.dispatch(WsVersionAction("0.0.1 Build20190101"));
+        this.unsubscribe = store.subscribe(
+            ()=>this.forceUpdate()
+        );
+        store.dispatch(VersionAction(sysConfig.version));
+
         const testData = [
             {key:"welcome",icon:"table",title:"Welcome",child:[]},
             {key:"testPage",icon:"table",title:"TestPage",child:[
@@ -54,15 +72,34 @@ export class Manager extends Component {
         ];
         store.dispatch(MenuNewDataAction(testData));
         store.dispatch(LoadingAction());
-        this.forceUpdate();
-
-        this.unsubscribe = store.subscribe(
-            ()=>this.forceUpdate()
-        );
     }
 
     componentWillUnmount() {
         this.unsubscribe()
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        console.log("=========================");
+        console.log(prevProps.wsAddress);
+        console.log(this.props.wsAddress);
+        console.log("=========================");
+        if(prevProps.wsAddress!==this.props.wsAddress){
+            store.dispatch(WsAddressAction(this.props.wsAddress));
+            //==============================================================
+            //TODO 如进行页面跳转后，是否会允许，需测试
+            if(this.props.wsAddress !== "" &&
+                store.getState().managerState.wsVersion === ""){
+                GetWsVersionInfo(
+                    this.props.wsAddress,
+                    (wsVersion)=>store.dispatch(WsVersionAction(wsVersion)),
+                    (err)=>console.log(err)
+                );
+            }
+            //==============================================================
+        }
+        if(prevProps.handleLogout!==this.props.handleLogout){
+            store.dispatch(HandleLogoutAction(this.props.handleLogout));
+        }
     }
 
     render() {
@@ -78,7 +115,8 @@ export class Manager extends Component {
                         <div className="logo" />
                         <MenuList style={{marginBottom:'80px'}} />
                         <div style={{width:'100%',height:'80px',backgroundColor:'transparent'}} />
-                        <div className={"VersionInfo"} style={{display:store.getState().managerState.collapsed?"none":"block"}}>
+                        <div className={"VersionInfo"}
+                             style={{display:store.getState().managerState.collapsed?"none":"block"}}>
                             <span>{store.getState().managerState.version}</span>
                             <br/>
                             <span>{store.getState().managerState.wsVersion}</span>
@@ -92,7 +130,8 @@ export class Manager extends Component {
                                 onClick={()=>store.dispatch(CollapsedAction())}
                             />
                             <div className={"rightHeader"}>
-                                <Button type={"link"}>
+                                <Button type={"link"}
+                                        onClick={()=>store.getState().managerState.handleLogout()}>
                                     <Icon type="logout" />Logout
                                 </Button>
                             </div>
@@ -154,3 +193,34 @@ const PageContent = () => {
             return <Welcome/>;
     }
 };
+
+//
+// const refreshVersion = (address="") => {
+//     if(address===""){
+//         return
+//     }
+//     if(store.getState().managerState.wsVersion===""){
+//         // GetWsVersionInfo(
+//         //     address,
+//         //     (wsVersion)=>store.dispatch(WsVersionAction(wsVersion)),
+//         //     (err)=>console.log(err)
+//         //     ).then();
+//         GetWsVersionInfoT(address).then();
+//     }
+// };
+
+
+
+// const wsAddress = this.props.wsAddress;
+// console.log(wsAddress);
+// if(wsAddress!==""&&store.getState().managerState.wsAddress === ""){
+//     store.dispatch(WsAddressAction(wsAddress));
+// }
+// const wsVersion = store.getState().managerState.wsVersion;
+// if(wsAddress !== "" && wsVersion === ""){
+//     GetWsVersionInfo(
+//         wsAddress,
+//         (wsVersion)=>store.dispatch(WsVersionAction(wsVersion)),
+//         (err)=>console.log(err)
+//     ).then();
+// }
