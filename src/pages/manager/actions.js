@@ -1,8 +1,9 @@
 import C from "./constants";
 
-export const LoadingAction = () => (
+export const LoggingOutAction = (s=false) => (
     {
-        type:C.Loading
+        type:C.Loading,
+        loggingOut: s
     }
 );
 

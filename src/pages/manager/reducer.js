@@ -3,10 +3,10 @@ import {GetMenuOpenKeys, GetMenuSelectedKeys} from "./common";
 
 export const managerState = (state={},action={}) => {
     switch (action.type) {
-        case C.Loading:
+        case C.LoggingOut:
             return {
                 ...state,
-                loading:!state.loading,
+                loggingOut:action.loggingOut
             };
         case C.Collapsed:
             return {

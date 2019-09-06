@@ -1,5 +1,5 @@
 const constants = {
-    Loading:"LOADING",
+    LoggingOut:"LOGGING_OUT",
     Collapsed:"COLLAPSED",
     CurrPage:"CURR_PAGE",
     Version:"VERSION",

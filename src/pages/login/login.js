@@ -1,20 +1,74 @@
 import React, {Component} from "react";
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 // import { Form,Icon, Input,Button } from 'antd';
 import { Button } from 'antd';
 import "./login.css"
+import {combineReducers, createStore} from "redux";
+import {loginState} from "./reducer";
+import {VersionAction,
+    WsVersionAction,
+    WsAddressAction,
+    LoggingInAction,
+    HandleLoginSuccessAction} from "./actions";
+
+const defaultState = {
+    loginState:{
+        loggingIn:false,
+        version:"",
+        wsVersion:"",
+        wsAddress:"",
+        handleLoginSuccess:f=>f,
+    },
+};
+
+const store = createStore(
+    combineReducers({loginState}),
+    defaultState
+);
 
 export class Login extends Component {
 
-    // static propTypes = {
-    //     handleLogin:PropTypes.func,
-    // };
-    //
-    // static defaultProps = {
-    //     handleLoginSuccess:f=>f,
-    // };
+    static propTypes = {
+        version:PropTypes.string,
+        wsVersion:PropTypes.string,
+        wsAddress:PropTypes.string,
+        handleLoginSuccess:PropTypes.func,
+    };
+
+    static defaultProps = {
+        version:"",
+        wsVersion:"",
+        wsAddress:"",
+        handleLoginSuccess:f=>f,
+    };
+
+    componentDidMount() {
+        this.unsubscribe = store.subscribe(
+            ()=>this.forceUpdate()
+        );
+    }
+
+    componentWillUnmount() {
+        this.unsubscribe()
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if(this.props.version!==prevProps.version){
+            store.dispatch(VersionAction(this.props.version));
+        }
+        if(this.props.wsVersion!==prevProps.wsVersion){
+            store.dispatch(WsVersionAction(this.props.wsVersion));
+        }
+        if(this.props.wsAddress!==prevProps.wsAddress){
+            store.dispatch(WsAddressAction(this.props.wsAddress));
+        }
+        if(this.props.handleLoginSuccess!==prevProps.handleLoginSuccess){
+            store.dispatch(HandleLoginSuccessAction(this.props.handleLoginSuccess));
+        }
+    }
 
     render() {
+        // this.props.handleLoginSuccess("segseg");
         return (
             <div>
                 {/*<LoginForm*/}
@@ -25,11 +79,29 @@ export class Login extends Component {
                 {/*<div className={"VersionInfo"} style={{color:'white'}}>*/}
                 {/*    <span>0.0.0 Build20190101</span>*/}
                 {/*</div>*/}
-                <Button type={"primary"} onClick={()=>this.props.handleLogin("user","pwd")}>Button</Button>
+                <Button
+                    loading={store.getState().loginState.loggingIn}
+                    type={"primary"} onClick={()=>handleLogin()}>
+                    login
+                </Button>
+                <br/>
+                <span>version:</span><span>{store.getState().loginState.version}</span>
+                <br/>
+                <span>wsVersion:</span><span>{store.getState().loginState.wsVersion}</span>
+                <br/>
+                <span>wsAddress:</span><span>{store.getState().loginState.wsAddress}</span>
             </div>
         )
     }
 }
+
+const handleLogin = ()=>{
+    store.dispatch(LoggingInAction(true));
+    setTimeout(function(){
+        store.getState().loginState.handleLoginSuccess("new cId");
+        store.dispatch(LoggingInAction(false));
+    },1000);
+};
 //
 // class LoginFormR extends React.Component {
 //     handleSubmit = e => {

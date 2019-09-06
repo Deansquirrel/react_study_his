@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import {message} from 'antd';
-import {ConfigProvider} from "antd";
+import {Button, message} from 'antd';
+import {ConfigProvider,Divider} from "antd";
 
 import zhCN from 'antd/lib/locale-provider/zh_CN';
 
@@ -12,6 +12,9 @@ import {Manager} from "./pages/manager/manager";
 import {combineReducers, createStore} from "redux";
 import {GetWsAddress} from "./pages/common";
 import {Login} from "./pages/login/login";
+import sysConfig from "./config";
+import {GetWsVersionInfo} from "./pages/DataInterface/common";
+import {Test} from "./pages/test/test";
 
 moment.locale('zh-cn');
 message.config({
@@ -23,6 +26,9 @@ class App extends Component {
         this.unsubscribe = store.subscribe(
             ()=>this.forceUpdate()
         );
+        if(store.getState().appState.version!==sysConfig.version){
+            store.dispatch(VersionAction(sysConfig.version));
+        }
         GetWsAddress(
             (address)=>store.dispatch(WsAddressAction(address)),
             (err)=>console.warn(err)
@@ -33,10 +39,35 @@ class App extends Component {
         this.unsubscribe()
     }
 
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if(store.getState().appState.version!==sysConfig.version){
+            store.dispatch(VersionAction(sysConfig.version));
+        }
+    }
 
-  render() {
+    render() {
         return (
             <ConfigProvider  locale={zhCN}>
+                <span>version:</span><span>{store.getState().appState.version}</span>
+                <br/>
+                <span>wsVersion:</span><span>{store.getState().appState.wsVersion}</span>
+                <br/>
+                <span>wsAddress:</span><span>{store.getState().appState.wsAddress}</span>
+                <br/>
+                <Button type={"primary"}
+                        onClick={()=>store.dispatch(CurrPageAction(moment().format('YYYY-MM-DD HH:mm:ss')))}>
+                    ChangePage
+                </Button>
+                <br/>
+                <span>currPage:</span><span>{store.getState().appState.currPage}</span>
+                <br/>
+                <Button type={"primary"}
+                        onClick={()=>store.dispatch(CIdAction(moment().format('YYYY-MM-DD HH:mm:ss')))}>
+                    cId
+                </Button>
+                <br/>
+                <span>cId:</span><span>{store.getState().appState.cId}</span>
+                <Divider />
                 <PageContent />
             </ConfigProvider>
         );
@@ -50,32 +81,56 @@ const PageContent = () => {
     switch (store.getState().appState.currPage) {
         case "manager":
             return <Manager
+                version={store.getState().appState.version}
+                wsVersion={store.getState().appState.wsVersion}
                 wsAddress={store.getState().appState.wsAddress}
                 handleLogout={()=>handleLogout()}
             />;
+        case "test":
+            return <Test />;
         default:
-            return <Login handleLogin={(user="",pwd="")=>handleLogin(user , pwd)}/>;
+            return <Login
+                version={store.getState().appState.version}
+                wsVersion={store.getState().appState.wsVersion}
+                wsAddress={store.getState().appState.wsAddress}
+                handleLoginSuccess={(cId="")=>handleLogin(cId)}/>;
     }
 };
 
-const handleLogin = (user="",pwd="") => {
-    console.log(user);
-    console.log(pwd);
-    // store.dispatch(CIdAction(cId));
-    store.dispatch(CurrPageAction("manager"));
+const handleLogin = (cId="") => {
+    store.dispatch(CIdAction(cId));
+    if(cId !== ""){
+        store.dispatch(CurrPageAction("manager"));
+    }
 };
 
 const handleLogout = () => {
-    console.log("fseg");
+    store.dispatch(CIdAction(""));
     store.dispatch(CurrPageAction("login"));
 };
 
 
 const C = {
+    Version:"VERSION",
+    WsVersion:"WS_VERSION",
     WsAddress:"WS_ADDRESS",
     CId:"C_ID",
     CurrPage:"CURR_PAGE",
 };
+
+const VersionAction = (version="") => (
+    {
+        type:C.Version,
+        version:version
+    }
+);
+
+const WsVersionAction = (wsVersion="") => (
+    {
+        type:C.WsVersion,
+        wsVersion:wsVersion
+    }
+);
 
 const WsAddressAction = (wsAddress="") => (
     {
@@ -100,7 +155,24 @@ const CurrPageAction = (page="") => (
 
 const appState = (state={},action={}) => {
     switch (action.type) {
+        case C.Version:
+            return {
+                ...state,
+                version:action.version,
+            };
+        case C.WsVersion:
+            return {
+                ...state,
+                wsVersion:action.wsVersion,
+            };
         case C.WsAddress:
+            if(state.wsAddress!==action.wsAddress){
+                GetWsVersionInfo(
+                    action.wsAddress,
+                    (wsVersion)=>store.dispatch(WsVersionAction(wsVersion)),
+                    (err)=>console.log(err)
+                );
+            }
             return {
                 ...state,
                 wsAddress: action.wsAddress
@@ -122,6 +194,8 @@ const appState = (state={},action={}) => {
 
 const defaultState = {
     appState:{
+        version:"",
+        wsVersion:"",
         wsAddress:"",
         currPage:"manager",
         cId:"",

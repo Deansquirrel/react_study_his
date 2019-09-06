@@ -6,27 +6,25 @@ import "./manager.css"
 import "../../App.css"
 import {Button,Layout,Icon,Menu} from "antd";
 
-import sysConfig from "../../config";
-
 import {managerState} from "./reducer";
 import {
     CollapsedAction, HandleLogoutAction,
     LoadingAction,
     MenuClickAction,
     MenuNewDataAction,
-    VersionAction, WsAddressAction,
-    WsVersionAction
+    WsAddressAction,
+    WsVersionAction,
+    VersionAction
 } from "./actions";
 import {Welcome} from "../welcome/welcome";
 import {Test} from "../test/test";
-import {GetWsVersionInfo} from "../DataInterface/common";
 
 const { Header, Sider, Content } = Layout;
 const { SubMenu } = Menu;
 
 const defaultState = {
     managerState:{
-        loading:true,
+        loggingOut:false,
         collapsed: false,
         currPage:"",
         version:"",
@@ -49,11 +47,15 @@ const store = createStore(
 
 export class Manager extends Component {
     static propTypes = {
+        version:PropTypes.string,
+        wsVersion:PropTypes.string,
         wsAddress:PropTypes.string,
         handleLogout:PropTypes.func,
     };
 
     static defaultProps = {
+        version:"",
+        wsVersion:"",
         wsAddress:"",
         handleLogout:f=>f,
     };
@@ -62,8 +64,6 @@ export class Manager extends Component {
         this.unsubscribe = store.subscribe(
             ()=>this.forceUpdate()
         );
-        store.dispatch(VersionAction(sysConfig.version));
-
         const testData = [
             {key:"welcome",icon:"table",title:"Welcome",child:[]},
             {key:"testPage",icon:"table",title:"TestPage",child:[
@@ -71,6 +71,7 @@ export class Manager extends Component {
                 ]}
         ];
         store.dispatch(MenuNewDataAction(testData));
+        store.dispatch(HandleLogoutAction(this.props.handleLogout));
         store.dispatch(LoadingAction());
     }
 
@@ -79,68 +80,68 @@ export class Manager extends Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        console.log("=========================");
-        console.log(prevProps.wsAddress);
-        console.log(this.props.wsAddress);
-        console.log("=========================");
-        if(prevProps.wsAddress!==this.props.wsAddress){
-            store.dispatch(WsAddressAction(this.props.wsAddress));
-            //==============================================================
-            //TODO 如进行页面跳转后，是否会允许，需测试
-            if(this.props.wsAddress !== "" &&
-                store.getState().managerState.wsVersion === ""){
-                GetWsVersionInfo(
-                    this.props.wsAddress,
-                    (wsVersion)=>store.dispatch(WsVersionAction(wsVersion)),
-                    (err)=>console.log(err)
-                );
-            }
-            //==============================================================
+        if(this.props.version!==prevProps.version){
+            console.log("update version");
+            store.dispatch(VersionAction(this.props.version));
         }
-        if(prevProps.handleLogout!==this.props.handleLogout){
-            store.dispatch(HandleLogoutAction(this.props.handleLogout));
+        if(this.props.wsVersion!==prevProps.wsVersion){
+            store.dispatch(WsVersionAction(this.props.wsVersion));
+        }
+        if(this.props.wsAddress!==prevProps.wsAddress){
+            store.dispatch(WsAddressAction(this.props.wsAddress));
         }
     }
 
     render() {
         return (
             <div className={"rootContainer"}>
-                <Layout>
-                    <Sider
-                        width={256}
-                        style={{minHeight:'100vh'}}
-                        trigger={null}
-                        collapsible
-                        collapsed={store.getState().managerState.collapsed}>
-                        <div className="logo" />
-                        <MenuList style={{marginBottom:'80px'}} />
-                        <div style={{width:'100%',height:'80px',backgroundColor:'transparent'}} />
-                        <div className={"VersionInfo"}
-                             style={{display:store.getState().managerState.collapsed?"none":"block"}}>
-                            <span>{store.getState().managerState.version}</span>
-                            <br/>
-                            <span>{store.getState().managerState.wsVersion}</span>
-                        </div>
-                    </Sider>
-                    <Layout>
-                        <Header style={{ background: '#fff', padding: 0 , width: '100%' }}>
-                            <Icon
-                                className="trigger"
-                                type={store.getState().managerState.collapsed ? 'menu-unfold' : 'menu-fold'}
-                                onClick={()=>store.dispatch(CollapsedAction())}
-                            />
-                            <div className={"rightHeader"}>
-                                <Button type={"link"}
-                                        onClick={()=>store.getState().managerState.handleLogout()}>
-                                    <Icon type="logout" />Logout
-                                </Button>
-                            </div>
-                        </Header>
-                        <Content style={{margin: '24px 16px',padding: 24,background: '#fff'}}>
-                            <PageContent />
-                        </Content>
-                    </Layout>
-                </Layout>
+                <Button
+                    loading={}
+                    type={"primary"} onClick={()=>this.props.handleLogout()}>
+                    logout
+                </Button>
+                <br/>
+                <span>version:</span><span>{store.getState().managerState.version}</span>
+                <br/>
+                <span>wsVersion:</span><span>{store.getState().managerState.wsVersion}</span>
+                <br/>
+                <span>wsAddress:</span><span>{store.getState().managerState.wsAddress}</span>
+                {/*<Layout>*/}
+                {/*    <Sider*/}
+                {/*        width={256}*/}
+                {/*        style={{minHeight:'100vh'}}*/}
+                {/*        trigger={null}*/}
+                {/*        collapsible*/}
+                {/*        collapsed={store.getState().managerState.collapsed}>*/}
+                {/*        <div className="logo" />*/}
+                {/*        <MenuList style={{marginBottom:'80px'}} />*/}
+                {/*        <div style={{width:'100%',height:'80px',backgroundColor:'transparent'}} />*/}
+                {/*        <div className={"VersionInfo"}*/}
+                {/*             style={{display:store.getState().managerState.collapsed?"none":"block"}}>*/}
+                {/*            <span>{store.getState().managerState.version}</span>*/}
+                {/*            <br/>*/}
+                {/*            <span>{store.getState().managerState.wsVersion}</span>*/}
+                {/*        </div>*/}
+                {/*    </Sider>*/}
+                {/*    <Layout>*/}
+                {/*        <Header style={{ background: '#fff', padding: 0 , width: '100%' }}>*/}
+                {/*            <Icon*/}
+                {/*                className="trigger"*/}
+                {/*                type={store.getState().managerState.collapsed ? 'menu-unfold' : 'menu-fold'}*/}
+                {/*                onClick={()=>store.dispatch(CollapsedAction())}*/}
+                {/*            />*/}
+                {/*            <div className={"rightHeader"}>*/}
+                {/*                <Button type={"link"}*/}
+                {/*                        onClick={()=>store.getState().managerState.handleLogout()}>*/}
+                {/*                    <Icon type="logout" />Logout*/}
+                {/*                </Button>*/}
+                {/*            </div>*/}
+                {/*        </Header>*/}
+                {/*        <Content style={{margin: '24px 16px',padding: 24,background: '#fff'}}>*/}
+                {/*            <PageContent />*/}
+                {/*        </Content>*/}
+                {/*    </Layout>*/}
+                {/*</Layout>*/}
             </div>
         )
     }
