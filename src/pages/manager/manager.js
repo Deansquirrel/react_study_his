@@ -96,7 +96,7 @@ export class Manager extends Component {
         return (
             <div className={"rootContainer"}>
                 <Button
-                    loading={}
+                    // loading={}
                     type={"primary"} onClick={()=>this.props.handleLogout()}>
                     logout
                 </Button>
