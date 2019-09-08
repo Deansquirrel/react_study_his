@@ -2,14 +2,22 @@ import C from "./constants";
 
 export const LoggingOutAction = (s=false) => (
     {
-        type:C.Loading,
+        type:C.LoggingOut,
         loggingOut: s
     }
 );
 
-export const CollapsedAction = () => (
+export const CollapsedAction = (c=false) => (
     {
-        type:C.Collapsed
+        type:C.Collapsed,
+        collapsed:c
+    }
+);
+
+export const CurrPageAction = (currPage="") => (
+    {
+        type:C.CurrPage,
+        currPage:currPage
     }
 );
 
@@ -34,19 +42,27 @@ export const WsAddressAction = (wsAddress="") => (
     }
 );
 
-export const MenuNewDataAction = (menu=[]) => (
+export const MenuAction = (menu=[]) => (
     {
-        type:C.MenuNewData,
-        menu:menu,
+        type:C.Menu,
+        menu:menu
     }
 );
 
-export const MenuClickAction = (page="") => (
+export const OpenKeysAction = (openKeys=[]) => (
     {
-        type:C.MenuClick,
-        page:page,
+        type:C.OpenKeys,
+        openKeys:openKeys
     }
 );
+
+export const SelectedKeysAction = (selectedKeys=[]) => (
+    {
+        type:C.SelectedKeys,
+        selectedKeys:selectedKeys
+    }
+);
+
 
 export const HandleLogoutAction = (handleLogout=f=>f) => (
     {

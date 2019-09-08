@@ -5,19 +5,19 @@ import {combineReducers,createStore} from "redux";
 import "./manager.css"
 import "../../App.css"
 import {Button,Layout,Icon,Menu} from "antd";
+import {Divider} from "antd";
 
 import {managerState} from "./reducer";
 import {
-    CollapsedAction, HandleLogoutAction,
-    LoadingAction,
-    MenuClickAction,
-    MenuNewDataAction,
+    CollapsedAction,
+    HandleLogoutAction,
     WsAddressAction,
     WsVersionAction,
-    VersionAction
+    VersionAction, LoggingOutAction, CurrPageAction, MenuAction, OpenKeysAction, SelectedKeysAction
 } from "./actions";
 import {Welcome} from "../welcome/welcome";
 import {Test} from "../test/test";
+import {GetMenuOpenKeys, GetMenuSelectedKeys} from "./common";
 
 const { Header, Sider, Content } = Layout;
 const { SubMenu } = Menu;
@@ -44,6 +44,27 @@ const store = createStore(
     defaultState
 );
 
+const setStoreDefault = () => {
+    store.dispatch(LoggingOutAction(defaultState.managerState.loggingOut));
+    store.dispatch(CollapsedAction(defaultState.managerState.collapsed));
+    store.dispatch(CurrPageAction(defaultState.managerState.currPage));
+    store.dispatch(VersionAction(defaultState.managerState.version));
+    store.dispatch(WsVersionAction(defaultState.managerState.wsVersion));
+    store.dispatch(WsAddressAction(defaultState.managerState.wsAddress));
+    store.dispatch(MenuAction(defaultState.managerState.menuData.menu));
+    store.dispatch(OpenKeysAction(defaultState.managerState.menuData.openKeys));
+    store.dispatch(SelectedKeysAction(defaultState.managerState.menuData.selectedKeys));
+    store.dispatch(HandleLogoutAction(defaultState.managerState.handleLogout()));
+};
+
+const refreshMenuData = (menu=[]) => {
+    store.dispatch(MenuAction(menu));
+    const selectedKeys = GetMenuSelectedKeys(menu);
+    const openKeys = GetMenuOpenKeys(menu);
+    store.dispatch(OpenKeysAction(openKeys));
+    store.dispatch(SelectedKeysAction(selectedKeys));
+};
+
 
 export class Manager extends Component {
     static propTypes = {
@@ -64,15 +85,19 @@ export class Manager extends Component {
         this.unsubscribe = store.subscribe(
             ()=>this.forceUpdate()
         );
+        setStoreDefault();
+
         const testData = [
             {key:"welcome",icon:"table",title:"Welcome",child:[]},
             {key:"testPage",icon:"table",title:"TestPage",child:[
                     {key:"testPage01",title:"TestPage01"},
                 ]}
         ];
-        store.dispatch(MenuNewDataAction(testData));
+        refreshMenuData(testData);
         store.dispatch(HandleLogoutAction(this.props.handleLogout));
-        store.dispatch(LoadingAction());
+        store.dispatch(VersionAction(this.props.version));
+        store.dispatch(WsVersionAction(this.props.wsVersion));
+        store.dispatch(WsAddressAction(this.props.wsAddress));
     }
 
     componentWillUnmount() {
@@ -96,52 +121,59 @@ export class Manager extends Component {
         return (
             <div className={"rootContainer"}>
                 <Button
-                    // loading={}
+                    loading={store.getState().managerState.loggingOut}
                     type={"primary"} onClick={()=>this.props.handleLogout()}>
                     logout
                 </Button>
+                <br/>
+                <span>collapsed:</span><span>{store.getState().managerState.collapsed?"True":"false"}</span>
                 <br/>
                 <span>version:</span><span>{store.getState().managerState.version}</span>
                 <br/>
                 <span>wsVersion:</span><span>{store.getState().managerState.wsVersion}</span>
                 <br/>
                 <span>wsAddress:</span><span>{store.getState().managerState.wsAddress}</span>
-                {/*<Layout>*/}
-                {/*    <Sider*/}
-                {/*        width={256}*/}
-                {/*        style={{minHeight:'100vh'}}*/}
-                {/*        trigger={null}*/}
-                {/*        collapsible*/}
-                {/*        collapsed={store.getState().managerState.collapsed}>*/}
-                {/*        <div className="logo" />*/}
-                {/*        <MenuList style={{marginBottom:'80px'}} />*/}
-                {/*        <div style={{width:'100%',height:'80px',backgroundColor:'transparent'}} />*/}
-                {/*        <div className={"VersionInfo"}*/}
-                {/*             style={{display:store.getState().managerState.collapsed?"none":"block"}}>*/}
-                {/*            <span>{store.getState().managerState.version}</span>*/}
-                {/*            <br/>*/}
-                {/*            <span>{store.getState().managerState.wsVersion}</span>*/}
-                {/*        </div>*/}
-                {/*    </Sider>*/}
-                {/*    <Layout>*/}
-                {/*        <Header style={{ background: '#fff', padding: 0 , width: '100%' }}>*/}
-                {/*            <Icon*/}
-                {/*                className="trigger"*/}
-                {/*                type={store.getState().managerState.collapsed ? 'menu-unfold' : 'menu-fold'}*/}
-                {/*                onClick={()=>store.dispatch(CollapsedAction())}*/}
-                {/*            />*/}
-                {/*            <div className={"rightHeader"}>*/}
-                {/*                <Button type={"link"}*/}
-                {/*                        onClick={()=>store.getState().managerState.handleLogout()}>*/}
-                {/*                    <Icon type="logout" />Logout*/}
-                {/*                </Button>*/}
-                {/*            </div>*/}
-                {/*        </Header>*/}
-                {/*        <Content style={{margin: '24px 16px',padding: 24,background: '#fff'}}>*/}
-                {/*            <PageContent />*/}
-                {/*        </Content>*/}
-                {/*    </Layout>*/}
-                {/*</Layout>*/}
+                <br/>
+                <span>openKeys:</span><span>{store.getState().managerState.menuData.openKeys.join("|")}</span>
+                <br/>
+                <span>selectedKeys:</span><span>{store.getState().managerState.menuData.selectedKeys.join("|")}</span>
+                <Divider />
+                <Layout>
+                    <Sider
+                        width={256}
+                        style={{minHeight:'100vh'}}
+                        trigger={null}
+                        collapsible
+                        collapsed={store.getState().managerState.collapsed}>
+                        <div className="logo" />
+                        <MenuList style={{marginBottom:'80px'}} />
+                        <div style={{width:'100%',height:'80px',backgroundColor:'transparent'}} />
+                        <div className={"VersionInfo"}
+                             style={{display:store.getState().managerState.collapsed?"none":"block"}}>
+                            <span>{store.getState().managerState.version}</span>
+                            <br/>
+                            <span>{store.getState().managerState.wsVersion}</span>
+                        </div>
+                    </Sider>
+                    <Layout>
+                        <Header style={{ background: '#fff', padding: 0 , width: '100%' }}>
+                            <Icon
+                                className="trigger"
+                                type={store.getState().managerState.collapsed ? 'menu-unfold' : 'menu-fold'}
+                                onClick={()=>store.dispatch(CollapsedAction(!store.getState().managerState.collapsed))}
+                            />
+                            <div className={"rightHeader"}>
+                                <Button type={"link"}
+                                        onClick={()=>store.getState().managerState.handleLogout()}>
+                                    <Icon type="logout" />Logout
+                                </Button>
+                            </div>
+                        </Header>
+                        <Content style={{margin: '24px 16px',padding: 24,background: '#fff'}}>
+                            <PageContent />
+                        </Content>
+                    </Layout>
+                </Layout>
             </div>
         )
     }
@@ -164,7 +196,7 @@ const MenuList = () => {
                             {item.child.map((subItem)=>{
                                 return (
                                     <Menu.Item key={subItem.key}
-                                               onClick={()=>store.dispatch(MenuClickAction(subItem.key))} >
+                                               onClick={()=>HandleMenuClick(subItem.key)} >
                                         <span>{subItem.title}</span>
                                     </Menu.Item>
                                 )
@@ -173,7 +205,7 @@ const MenuList = () => {
                     )
                 } else {
                     return (
-                        <Menu.Item key={item.key} onClick={()=>store.dispatch(MenuClickAction(item.key))}>
+                        <Menu.Item key={item.key}>
                             <Icon type={item.icon} />
                             <span>{item.title}</span>
                         </Menu.Item>
@@ -182,6 +214,14 @@ const MenuList = () => {
             })}
         </Menu>
     )
+};
+
+const HandleMenuClick = (page="") => {
+    store.dispatch(CurrPageAction(page));
+    const selectedKeys = GetMenuSelectedKeys(store.getState().managerState.menuData.menu,page);
+    const openKeys = GetMenuOpenKeys(store.getState().managerState.menuData.menu,page);
+    store.dispatch(OpenKeysAction(openKeys));
+    store.dispatch(SelectedKeysAction(selectedKeys));
 };
 
 const PageContent = () => {
@@ -194,34 +234,3 @@ const PageContent = () => {
             return <Welcome/>;
     }
 };
-
-//
-// const refreshVersion = (address="") => {
-//     if(address===""){
-//         return
-//     }
-//     if(store.getState().managerState.wsVersion===""){
-//         // GetWsVersionInfo(
-//         //     address,
-//         //     (wsVersion)=>store.dispatch(WsVersionAction(wsVersion)),
-//         //     (err)=>console.log(err)
-//         //     ).then();
-//         GetWsVersionInfoT(address).then();
-//     }
-// };
-
-
-
-// const wsAddress = this.props.wsAddress;
-// console.log(wsAddress);
-// if(wsAddress!==""&&store.getState().managerState.wsAddress === ""){
-//     store.dispatch(WsAddressAction(wsAddress));
-// }
-// const wsVersion = store.getState().managerState.wsVersion;
-// if(wsAddress !== "" && wsVersion === ""){
-//     GetWsVersionInfo(
-//         wsAddress,
-//         (wsVersion)=>store.dispatch(WsVersionAction(wsVersion)),
-//         (err)=>console.log(err)
-//     ).then();
-// }

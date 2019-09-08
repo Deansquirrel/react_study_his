@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import PropTypes from 'prop-types';
 // import { Form,Icon, Input,Button } from 'antd';
-import { Button } from 'antd';
+import { Button,Divider } from 'antd';
 import "./login.css"
 import {combineReducers, createStore} from "redux";
 import {loginState} from "./reducer";
@@ -10,6 +10,17 @@ import {VersionAction,
     WsAddressAction,
     LoggingInAction,
     HandleLoginSuccessAction} from "./actions";
+
+import userInfo from "../../data/user";
+
+const loginCheck =(user="",pwd="") => {
+    let fList = [];
+    fList.push(...userInfo);
+    const rList = fList.filter((item)=>{
+        return item.u===user && item.p === pwd;
+    });
+    return rList.length > 0;
+};
 
 const defaultState = {
     loginState:{
@@ -46,6 +57,13 @@ export class Login extends Component {
         this.unsubscribe = store.subscribe(
             ()=>this.forceUpdate()
         );
+        store.dispatch(VersionAction(this.props.version));
+        store.dispatch(WsVersionAction(this.props.wsVersion));
+        store.dispatch(WsAddressAction(this.props.wsAddress));
+        store.dispatch(HandleLoginSuccessAction(this.props.handleLoginSuccess));
+
+        console.log(loginCheck("admin","zl84519741"));
+        console.log(loginCheck("admin","Zl84519741"));
     }
 
     componentWillUnmount() {
@@ -68,7 +86,6 @@ export class Login extends Component {
     }
 
     render() {
-        // this.props.handleLoginSuccess("segseg");
         return (
             <div>
                 {/*<LoginForm*/}
@@ -90,6 +107,8 @@ export class Login extends Component {
                 <span>wsVersion:</span><span>{store.getState().loginState.wsVersion}</span>
                 <br/>
                 <span>wsAddress:</span><span>{store.getState().loginState.wsAddress}</span>
+                <Divider />
+
             </div>
         )
     }

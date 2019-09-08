@@ -1,5 +1,4 @@
 import C from "./constants"
-import {GetMenuOpenKeys, GetMenuSelectedKeys} from "./common";
 
 export const managerState = (state={},action={}) => {
     switch (action.type) {
@@ -11,7 +10,7 @@ export const managerState = (state={},action={}) => {
         case C.Collapsed:
             return {
                 ...state,
-                collapsed:!state.collapsed,
+                collapsed:action.collapsed,
             };
         case C.CurrPage:
             return {
@@ -31,17 +30,21 @@ export const managerState = (state={},action={}) => {
         case C.WsAddress:
             return {
                 ...state,
-                wsAddress: action.address,
+                wsAddress: action.wsAddress,
             };
-        case C.MenuNewData:
+        case C.Menu:
             return {
                 ...state,
                 menuData:menuData(state.menuData,action)
             };
-        case C.MenuClick:
+        case C.OpenKeys:
             return {
                 ...state,
-                currPage: action.page,
+                menuData:menuData(state.menuData,action)
+            };
+        case C.SelectedKeys:
+            return {
+                ...state,
                 menuData:menuData(state.menuData,action)
             };
         case C.HandleLogout:
@@ -56,23 +59,20 @@ export const managerState = (state={},action={}) => {
 
 const menuData = (state={},action={}) => {
     switch (action.type) {
-        case C.MenuNewData:
-            const selectedKeys = GetMenuSelectedKeys(action.menu);
-            const openKeys = GetMenuOpenKeys(action.menu);
+        case C.Menu:
             return {
                 ...state,
-                menu:action.menu,
-                openKeys:openKeys,
-                selectedKeys:selectedKeys,
+                menu:action.menu
             };
-        case C.MenuClick:
-            const selectedKeysChange = GetMenuSelectedKeys(state.menu,action.page);
-            const openKeysChange = GetMenuOpenKeys(state.menu,action.page);
+        case C.OpenKeys:
             return {
                 ...state,
-                menu:state.menu,
-                openKeys:openKeysChange,
-                selectedKeys:selectedKeysChange,
+                openKeys:action.openKeys
+            };
+        case C.SelectedKeys:
+            return {
+                ...state,
+                selectedKeys:action.selectedKeys
             };
         default:
             return state;

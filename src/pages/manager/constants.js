@@ -5,8 +5,9 @@ const constants = {
     Version:"VERSION",
     WsVersion:"WS_VERSION",
     WsAddress:"WS_ADDRESS",
-    MenuNewData:"MENU_NEW_DATA",
-    MenuClick:"MENU_CLICK",
+    Menu:"MENU",
+    OpenKeys:"OPEN_KEYS",
+    SelectedKeys:"SELECTED_KEYS",
     HandleLogout:"HANDLE_LOGOUT",
 };
 
