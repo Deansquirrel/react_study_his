@@ -5,7 +5,7 @@ import {combineReducers,createStore} from "redux";
 import "./manager.css"
 import "../../App.css"
 import {Button,Layout,Icon,Menu} from "antd";
-import {Divider} from "antd";
+// import {Divider} from "antd";
 
 import {managerState} from "./reducer";
 import {
@@ -120,24 +120,24 @@ export class Manager extends Component {
     render() {
         return (
             <div className={"rootContainer"}>
-                <Button
-                    loading={store.getState().managerState.loggingOut}
-                    type={"primary"} onClick={()=>this.props.handleLogout()}>
-                    logout
-                </Button>
-                <br/>
-                <span>collapsed:</span><span>{store.getState().managerState.collapsed?"True":"false"}</span>
-                <br/>
-                <span>version:</span><span>{store.getState().managerState.version}</span>
-                <br/>
-                <span>wsVersion:</span><span>{store.getState().managerState.wsVersion}</span>
-                <br/>
-                <span>wsAddress:</span><span>{store.getState().managerState.wsAddress}</span>
-                <br/>
-                <span>openKeys:</span><span>{store.getState().managerState.menuData.openKeys.join("|")}</span>
-                <br/>
-                <span>selectedKeys:</span><span>{store.getState().managerState.menuData.selectedKeys.join("|")}</span>
-                <Divider />
+                {/*<Button*/}
+                {/*    loading={store.getState().managerState.loggingOut}*/}
+                {/*    type={"primary"} onClick={()=>this.props.handleLogout()}>*/}
+                {/*    logout*/}
+                {/*</Button>*/}
+                {/*<br/>*/}
+                {/*<span>collapsed:</span><span>{store.getState().managerState.collapsed?"True":"false"}</span>*/}
+                {/*<br/>*/}
+                {/*<span>version:</span><span>{store.getState().managerState.version}</span>*/}
+                {/*<br/>*/}
+                {/*<span>wsVersion:</span><span>{store.getState().managerState.wsVersion}</span>*/}
+                {/*<br/>*/}
+                {/*<span>wsAddress:</span><span>{store.getState().managerState.wsAddress}</span>*/}
+                {/*<br/>*/}
+                {/*<span>openKeys:</span><span>{store.getState().managerState.menuData.openKeys.join("|")}</span>*/}
+                {/*<br/>*/}
+                {/*<span>selectedKeys:</span><span>{store.getState().managerState.menuData.selectedKeys.join("|")}</span>*/}
+                {/*<Divider />*/}
                 <Layout>
                     <Sider
                         width={256}

@@ -1,7 +1,10 @@
 import React, {Component} from "react";
 import PropTypes from 'prop-types';
-// import { Form,Icon, Input,Button } from 'antd';
-import { Button,Divider } from 'antd';
+import { Form,Icon, Input,Button } from 'antd';
+// import { Divider } from 'antd';
+
+import uuid from "uuid";
+
 import "./login.css"
 import {combineReducers, createStore} from "redux";
 import {loginState} from "./reducer";
@@ -61,9 +64,6 @@ export class Login extends Component {
         store.dispatch(WsVersionAction(this.props.wsVersion));
         store.dispatch(WsAddressAction(this.props.wsAddress));
         store.dispatch(HandleLoginSuccessAction(this.props.handleLoginSuccess));
-
-        console.log(loginCheck("admin","zl84519741"));
-        console.log(loginCheck("admin","Zl84519741"));
     }
 
     componentWillUnmount() {
@@ -88,102 +88,119 @@ export class Login extends Component {
     render() {
         return (
             <div>
-                {/*<LoginForm*/}
-                {/*    title={"登   录"}*/}
-                {/*    disabled={this.state.isLoggingIn}*/}
-                {/*    handleLogin={(username,password)=> this.handleLogin(username,password)}*/}
-                {/*/>*/}
-                {/*<div className={"VersionInfo"} style={{color:'white'}}>*/}
-                {/*    <span>0.0.0 Build20190101</span>*/}
-                {/*</div>*/}
-                <Button
-                    loading={store.getState().loginState.loggingIn}
-                    type={"primary"} onClick={()=>handleLogin()}>
-                    login
-                </Button>
-                <br/>
-                <span>version:</span><span>{store.getState().loginState.version}</span>
-                <br/>
-                <span>wsVersion:</span><span>{store.getState().loginState.wsVersion}</span>
-                <br/>
-                <span>wsAddress:</span><span>{store.getState().loginState.wsAddress}</span>
-                <Divider />
-
+                {/*<Button*/}
+                {/*    loading={store.getState().loginState.loggingIn}*/}
+                {/*    type={"primary"} onClick={()=>handleLogin()}>*/}
+                {/*    login*/}
+                {/*</Button>*/}
+                {/*<br/>*/}
+                {/*<span>version:</span><span>{store.getState().loginState.version}</span>*/}
+                {/*<br/>*/}
+                {/*<span>wsVersion:</span><span>{store.getState().loginState.wsVersion}</span>*/}
+                {/*<br/>*/}
+                {/*<span>wsAddress:</span><span>{store.getState().loginState.wsAddress}</span>*/}
+                {/*<Divider />*/}
+                <LoginForm />
+                <div className={"VersionInfo"}>
+                    <span>{store.getState().loginState.version}</span>
+                    <br/>
+                    <span>{store.getState().loginState.wsVersion}</span>
+                </div>
             </div>
         )
     }
 }
 
-const handleLogin = ()=>{
-    store.dispatch(LoggingInAction(true));
-    setTimeout(function(){
-        store.getState().loginState.handleLoginSuccess("new cId");
-        store.dispatch(LoggingInAction(false));
-    },1000);
+const newSessionId = () => {
+    console.log(uuid.v4());
+    return "";
 };
-//
-// class LoginFormR extends React.Component {
-//     handleSubmit = e => {
-//         e.preventDefault();
-//         this.props.form.validateFields((err, values) => {
-//             if (!err) {
-//                 // console.log('Received values of form: ', values);
-//                 this.handleLogin(values["username"],values["password"])
-//             }
-//         });
-//     };
-//
-//     handleLogin(username,password){
-//         this.props.handleLogin(username,password)
-//     }
-//
-//     componentDidMount() {
-//         document.getElementById("normal_login_username").focus();
-//     }
-//
-//     render() {
-//         const { getFieldDecorator } = this.props.form;
-//         return (
-//             <div className={"login-form"}>
-//                 <h1>{this.props.title?this.props.title:"Login in"}</h1>
-//                 <Form style={{marginTop:'50px'}} onSubmit={this.handleSubmit}>
-//                      <Form.Item>
-//                          {getFieldDecorator('username', {
-//                              rules: [{ required: true, message: 'Please input your username!' }],
-//                          })(
-//                              <Input size={"large"}
-//                                  prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
-//                                  placeholder="Username"
-//                              />,
-//                          )}
-//                      </Form.Item>
-//                     <Form.Item>
-//                           {getFieldDecorator('password', {
-//                             rules: [{ required: true, message: 'Please input your Password!' }],
-//                             })(
-//                          <Input size={"large"}
-//                              prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
-//                              type="password"
-//                              placeholder="Password"
-//                          />,
-//                      )}
-//                     </Form.Item>
-//                     <Form.Item>
-//                         <Button
-//                             loading={this.props.disabled}
-//                             type="primary"
-//                             style={{width:'100%',marginTop:'30px'}}
-//                             size={"large"}
-//                             htmlType="submit"
-//                             className="login-form-button">
-//                             {!this.props.disabled?"Log in":"Logging in"}
-//                         </Button>
-//                     </Form.Item>
-//
-//                 </Form>
-//             </div>
-//         )
-//     }
-// }
-//
-// const LoginForm = Form.create({ name: 'normal_login' })(LoginFormR);
+
+class LoginFormR extends React.Component {
+    constructor(props){
+        super(props);
+        this.initFocus.bind(this);
+    }
+
+
+    handleSubmit = e => {
+        e.preventDefault();
+        this.props.form.validateFields((err, values) => {
+            console.log(values["username"] + " - " + values["password"]);
+            store.dispatch(LoggingInAction(true));
+            if (!err) {
+                // this.handleLogin(values["username"],values["password"])
+                if(loginCheck(values["username"],values["password"])){
+                    store.getState().loginState.handleLoginSuccess(newSessionId());
+                }
+            } else {
+                if(values["username"]===undefined||values["username"]===""){
+                    console.log(0);
+                    this.initFocus(0);
+                } else {
+                    console.log(1);
+                    this.initFocus(1)
+                }
+            }
+            store.dispatch(LoggingInAction(false));
+        });
+    };
+
+    componentDidMount() {
+        this.initFocus();
+    }
+
+    initFocus = (c=0) => {
+        if(c===0){
+            document.getElementById("normal_login_username").focus();
+        } else {
+            document.getElementById("normal_login_password").focus();
+        }
+    };
+
+    render() {
+        const { getFieldDecorator } = this.props.form;
+        return (
+            <div className={"login-form"}>
+                <h1>Login in</h1>
+                <Form style={{marginTop:'50px'}} onSubmit={this.handleSubmit}>
+                     <Form.Item>
+                         {getFieldDecorator('username', {
+                             rules: [{ required: true, message: 'Please input your username!' }],
+                         })(
+                             <Input size={"large"}
+                                 prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                                 placeholder="Username"
+                             />,
+                         )}
+                     </Form.Item>
+                    <Form.Item>
+                          {getFieldDecorator('password', {
+                            rules: [{ required: true, message: 'Please input your Password!' }],
+                            })(
+                         <Input size={"large"}
+                             prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                             type="password"
+                             placeholder="Password"
+                         />,
+                     )}
+                    </Form.Item>
+                    <Form.Item>
+                        <Button
+                            loading={store.getState().loginState.loggingIn}
+                            type="primary"
+                            style={{width:'100%',marginTop:'30px'}}
+                            size={"large"}
+                            htmlType="submit"
+                            className="login-form-button">
+                            {store.getState().loginState.loggingIn?"Logging in":"Log in"}
+                        </Button>
+                    </Form.Item>
+
+                </Form>
+            </div>
+        )
+    }
+}
+
+const LoginForm = Form.create({ name: 'normal_login' })(LoginFormR);
