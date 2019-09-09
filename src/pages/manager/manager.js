@@ -18,6 +18,7 @@ import {
 import {Welcome} from "../welcome/welcome";
 import {Test} from "../test/test";
 import {GetMenuOpenKeys, GetMenuSelectedKeys} from "./common";
+import {GetMenuData} from "../../data/common";
 
 const { Header, Sider, Content } = Layout;
 const { SubMenu } = Menu;
@@ -87,13 +88,13 @@ export class Manager extends Component {
         );
         setStoreDefault();
 
-        const testData = [
-            {key:"welcome",icon:"table",title:"Welcome",child:[]},
-            {key:"testPage",icon:"table",title:"TestPage",child:[
-                    {key:"testPage01",title:"TestPage01"},
-                ]}
-        ];
-        refreshMenuData(testData);
+        // const testData = [
+        //     {key:"welcome",icon:"table",title:"Welcome",child:[]},
+        //     {key:"testPage",icon:"table",title:"TestPage",child:[
+        //             {key:"testPage01",title:"TestPage01"},
+        //         ]}
+        // ];
+        refreshMenuData(GetMenuData());
         store.dispatch(HandleLogoutAction(this.props.handleLogout));
         store.dispatch(VersionAction(this.props.version));
         store.dispatch(WsVersionAction(this.props.wsVersion));
@@ -120,24 +121,6 @@ export class Manager extends Component {
     render() {
         return (
             <div className={"rootContainer"}>
-                {/*<Button*/}
-                {/*    loading={store.getState().managerState.loggingOut}*/}
-                {/*    type={"primary"} onClick={()=>this.props.handleLogout()}>*/}
-                {/*    logout*/}
-                {/*</Button>*/}
-                {/*<br/>*/}
-                {/*<span>collapsed:</span><span>{store.getState().managerState.collapsed?"True":"false"}</span>*/}
-                {/*<br/>*/}
-                {/*<span>version:</span><span>{store.getState().managerState.version}</span>*/}
-                {/*<br/>*/}
-                {/*<span>wsVersion:</span><span>{store.getState().managerState.wsVersion}</span>*/}
-                {/*<br/>*/}
-                {/*<span>wsAddress:</span><span>{store.getState().managerState.wsAddress}</span>*/}
-                {/*<br/>*/}
-                {/*<span>openKeys:</span><span>{store.getState().managerState.menuData.openKeys.join("|")}</span>*/}
-                {/*<br/>*/}
-                {/*<span>selectedKeys:</span><span>{store.getState().managerState.menuData.selectedKeys.join("|")}</span>*/}
-                {/*<Divider />*/}
                 <Layout>
                     <Sider
                         width={256}

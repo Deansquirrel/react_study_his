@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from "prop-types";
-// import {Button, Divider} from 'antd';
 import {ConfigProvider,message} from "antd";
 
 import zhCN from 'antd/lib/locale-provider/zh_CN';
@@ -59,26 +58,6 @@ class App extends Component {
     render() {
         return (
             <ConfigProvider  locale={zhCN}>
-                {/*<span>version:</span><span>{store.getState().appState.version}</span>*/}
-                {/*<br/>*/}
-                {/*<span>wsVersion:</span><span>{store.getState().appState.wsVersion}</span>*/}
-                {/*<br/>*/}
-                {/*<span>wsAddress:</span><span>{store.getState().appState.wsAddress}</span>*/}
-                {/*<br/>*/}
-                {/*<Button type={"primary"}*/}
-                {/*        onClick={()=>store.dispatch(CurrPageAction(moment().format('YYYY-MM-DD HH:mm:ss')))}>*/}
-                {/*    ChangePage*/}
-                {/*</Button>*/}
-                {/*<br/>*/}
-                {/*<span>currPage:</span><span>{store.getState().appState.currPage}</span>*/}
-                {/*<br/>*/}
-                {/*<Button type={"primary"}*/}
-                {/*        onClick={()=>store.dispatch(CIdAction(moment().format('YYYY-MM-DD HH:mm:ss')))}>*/}
-                {/*    cId*/}
-                {/*</Button>*/}
-                {/*<br/>*/}
-                {/*<span>cId:</span><span>{store.getState().appState.cId}</span>*/}
-                {/*<Divider />*/}
                 <PageContent />
             </ConfigProvider>
         );

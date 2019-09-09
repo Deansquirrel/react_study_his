@@ -14,15 +14,12 @@ import {VersionAction,
     LoggingInAction,
     HandleLoginSuccessAction} from "./actions";
 
-import userInfo from "../../data/user";
+import {GetUserInfo} from "../../data/common";
 
 const loginCheck =(user="",pwd="") => {
-    let fList = [];
-    fList.push(...userInfo);
-    const rList = fList.filter((item)=>{
+    return GetUserInfo().filter((item)=>{
         return item.u===user && item.p === pwd;
-    });
-    return rList.length > 0;
+    }).length > 0
 };
 
 const defaultState = {

@@ -1,0 +1,6 @@
+[
+  {"key":"welcome","icon":"table","title":"Welcome","child":[]},
+  {"key":"testPage","icon":"table","title":"TestPage","child":[
+    {"key":"testPage01","title":"TestPage01"}
+  ]}
+]
