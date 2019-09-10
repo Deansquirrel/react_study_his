@@ -1,7 +1,6 @@
 import React, {Component} from "react";
 import PropTypes from 'prop-types';
-import { Form,Icon, Input,Button } from 'antd';
-// import { Divider } from 'antd';
+import { Form,Icon, Input,Button,message } from 'antd';
 
 import uuid from "uuid";
 
@@ -85,18 +84,6 @@ export class Login extends Component {
     render() {
         return (
             <div>
-                {/*<Button*/}
-                {/*    loading={store.getState().loginState.loggingIn}*/}
-                {/*    type={"primary"} onClick={()=>handleLogin()}>*/}
-                {/*    login*/}
-                {/*</Button>*/}
-                {/*<br/>*/}
-                {/*<span>version:</span><span>{store.getState().loginState.version}</span>*/}
-                {/*<br/>*/}
-                {/*<span>wsVersion:</span><span>{store.getState().loginState.wsVersion}</span>*/}
-                {/*<br/>*/}
-                {/*<span>wsAddress:</span><span>{store.getState().loginState.wsAddress}</span>*/}
-                {/*<Divider />*/}
                 <LoginForm />
                 <div className={"VersionInfo"}>
                     <span>{store.getState().loginState.version}</span>
@@ -109,8 +96,7 @@ export class Login extends Component {
 }
 
 const newSessionId = () => {
-    console.log(uuid.v4());
-    return "";
+    return uuid.v4().replace(/-/g,"").toUpperCase();
 };
 
 class LoginFormR extends React.Component {
@@ -123,19 +109,18 @@ class LoginFormR extends React.Component {
     handleSubmit = e => {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
-            console.log(values["username"] + " - " + values["password"]);
             store.dispatch(LoggingInAction(true));
             if (!err) {
-                // this.handleLogin(values["username"],values["password"])
                 if(loginCheck(values["username"],values["password"])){
                     store.getState().loginState.handleLoginSuccess(newSessionId());
+                } else {
+                    this.initFocus(1);
+                    message.error("登录名不存在或密码错误");
                 }
             } else {
                 if(values["username"]===undefined||values["username"]===""){
-                    console.log(0);
                     this.initFocus(0);
                 } else {
-                    console.log(1);
                     this.initFocus(1)
                 }
             }
@@ -193,7 +178,6 @@ class LoginFormR extends React.Component {
                             {store.getState().loginState.loggingIn?"Logging in":"Log in"}
                         </Button>
                     </Form.Item>
-
                 </Form>
             </div>
         )

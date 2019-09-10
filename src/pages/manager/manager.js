@@ -5,7 +5,6 @@ import {combineReducers,createStore} from "redux";
 import "./manager.css"
 import "../../App.css"
 import {Button,Layout,Icon,Menu} from "antd";
-// import {Divider} from "antd";
 
 import {managerState} from "./reducer";
 import {
@@ -188,7 +187,7 @@ const MenuList = () => {
                     )
                 } else {
                     return (
-                        <Menu.Item key={item.key}>
+                        <Menu.Item key={item.key} onClick={()=>HandleMenuClick(item.key)}>
                             <Icon type={item.icon} />
                             <span>{item.title}</span>
                         </Menu.Item>
