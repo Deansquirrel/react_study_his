@@ -1,5 +1,6 @@
 export default {
   path: '/pageA',
+  component: '@/layouts/Common',
   routes: [
     {
       path: '/pageA/pageAA',

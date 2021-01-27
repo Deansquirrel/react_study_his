@@ -1,4 +1,15 @@
 export default {
   path: '/',
-  component: '@/pages/index',
+  component: '@/layouts/Common',
+  routes: [
+    {
+      path: '/',
+      redirect: '/login',
+    },
+    {
+      path: '/login',
+      component: '@/pages/login',
+      exact: true,
+    },
+  ],
 };
