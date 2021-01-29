@@ -1,16 +1,15 @@
 import request from '@/utils/request';
 import authReq from './auth.d';
-import constant from '@/constant';
+import constant from '@/constant/index';
 
-const baseUrl = constant.BACK_URL + '/auth';
+const baseUrl = '' + constant.BASE_URL + '/auth';
 
 const REQUEST_URL = (url: string) => {
-  return baseUrl + url;
+  return '' + baseUrl + url;
 };
 
 export const authLogin = (req: authReq.authLoginReq): Promise<any> => {
   const url = REQUEST_URL('/login');
-  console.log(url);
   return request({
     url: url,
     method: 'post',

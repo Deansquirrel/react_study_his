@@ -7,8 +7,8 @@ const service = axios.create({
 service.interceptors.request.use(
   (config) => {
     // config.headers['X-Token'] = 'test token';
-    config.headers['Content-Type'] = 'application/json';
-    config.headers['Accept'] = 'application/json';
+    // config.headers['Content-Type'] = 'application/json';
+    // config.headers['Accept'] = 'application/json';
     return config;
   },
   (error) => {

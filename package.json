@@ -37,14 +37,5 @@
     "react-dom": "17.x",
     "typescript": "^4.1.2",
     "yorkie": "^2.0.0"
-  },
-  "proxy": {
-    "/api": {
-      "target": "http://119.3.122.149:9050/",
-      "changeOrigin": true,
-      "pathRewrite": {
-        "^/api": ""
-      }
-    }
   }
 }
