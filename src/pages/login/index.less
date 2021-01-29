@@ -1,7 +1,7 @@
-@frm-height: 437px;
+@frm-height: 400px;
 @frm-widht: 365px;
 
-#form-login {
+#div-login {
   width: @frm-widht;
   height: @frm-height;
   position: absolute;
@@ -11,15 +11,15 @@
   margin-left: @frm-widht * -0.5;
   background-color: white;
   border-radius: 5px;
-  padding: 45px;
-  line-height: 50px;
+  padding: 60px 45px 60px 45px;
 }
 
-body {
+body :scope {
   min-width: @frm-widht;
   min-height: @frm-height;
 }
 
-.site-form-item-icon {
-  color: rgba(0, 0, 0, 0.25);
+#div-login .login-form-button {
+  width: 100%;
+  margin-top: 20px;
 }

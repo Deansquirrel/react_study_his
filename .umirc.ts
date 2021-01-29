@@ -11,7 +11,7 @@ export default defineConfig({
     type: 'none',
   },
   title: 'Test App',
-  links: [{ rel: 'icon', href: '/favicon.ico' }],
+  links: [{ rel: 'icon', href: '/assets/favicon.ico' }],
   routes: routes,
   fastRefresh: {},
 });
