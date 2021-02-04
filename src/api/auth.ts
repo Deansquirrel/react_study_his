@@ -1,19 +1,21 @@
 import request from '@/utils/request';
-import authReq from './auth.d';
 import constant from '@/constant/index';
+import authDef from './auth.d';
+import baseDef from './base.d';
+import { AxiosPromise } from 'axios';
 
-const baseUrl = '' + constant.BASE_URL + '/auth';
+const baseUrl = constant.BASE_URL + '/auth';
 
 const REQUEST_URL = (url: string) => {
   return '' + baseUrl + url;
 };
 
-export const authLogin = (req: authReq.authLoginReq): Promise<any> => {
-  const url = REQUEST_URL('/login');
+export const authLogin = (
+  req: authDef.authLoginReq,
+): AxiosPromise<authDef.authLoginResp> => {
   return request({
-    url: url,
+    url: REQUEST_URL('/login'),
+    data: req,
     method: 'post',
-    // data: req,
-    params: req,
   });
 };

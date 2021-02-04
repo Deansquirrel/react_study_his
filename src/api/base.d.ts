@@ -1,9 +1,9 @@
-declare namespace baseReq {
+declare namespace base {
   interface resp<T> {
-    code: string;
+    code: number;
     message: string;
     data?: T;
   }
 }
 
-export default baseReq;
+export default base;

@@ -1,21 +1,21 @@
 export default {
   'POST /api/auth/login': (req: any, res: any) => {
-    const data: { userName: string; password: string } = req.query;
+    const data = req.body;
     console.log('POST /api/login', data);
     setTimeout(() => {
       const d = { token: 'test token' };
-      if (data.userName === 'yuansong' && data.password === 'yuansong') {
+      if (data.username === 'yuansong' && data.password === 'yuansong') {
         res.json({
-          code: '0000',
+          code: 0,
           message: 'success',
           data: d,
         });
       } else {
         res.json({
-          code: '0001',
+          code: 10001,
           message: 'username or password error',
         });
       }
-    }, 3000);
+    }, 1000);
   },
 };

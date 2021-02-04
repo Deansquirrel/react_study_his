@@ -4,7 +4,7 @@ import BaseComponentWithStore from '@/components/BaseComponentWithStore';
 import { Spin, Form, Input, Checkbox, Button } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 
-import authReq from '@/api/auth.d';
+import authDef from '@/api/auth.d';
 import { authLogin } from '@/api/auth';
 
 import './index.less';
@@ -17,11 +17,6 @@ interface IState {
   loading: boolean;
 }
 
-interface LoginReq {
-  username: string;
-  password: string;
-}
-
 class Login extends BaseComponentWithStore<{}, IState> {
   constructor(props: Readonly<{}>) {
     super(props);
@@ -30,22 +25,23 @@ class Login extends BaseComponentWithStore<{}, IState> {
     };
   }
 
-  onFinish = (values: LoginReq) => {
+  onFinish = (values: { username: any; password: any }) => {
     console.log('data: ', values.username, values.password);
 
-    let req: authReq.authLoginReq = {
-      userName: values.username,
+    let req: authDef.authLoginReq = {
+      username: values.username,
       password: values.password,
     };
+
     this.setState({
       loading: true,
     });
     authLogin(req)
-      .then((response) => {
-        console.log('response', response);
+      .then((resp) => {
+        console.log(resp);
       })
       .catch((error) => {
-        console.log('error', error);
+        console.log(error);
       })
       .finally(() => {
         this.setState({

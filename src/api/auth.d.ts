@@ -1,8 +1,12 @@
-declare namespace authReq {
+declare namespace authDef {
   interface authLoginReq {
-    userName: string;
+    username: string;
     password: string;
+  }
+
+  interface authLoginResp {
+    token: string;
   }
 }
 
-export default authReq;
+export default authDef;

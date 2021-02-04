@@ -1,4 +1,6 @@
 import axios from 'axios';
+import responseCode from '@/constant/responseCode';
+import baseDef from '@/api/base.d';
 
 const service = axios.create({
   timeout: 30000,
@@ -19,10 +21,11 @@ service.interceptors.request.use(
 
 service.interceptors.response.use(
   (response) => {
-    const res = response.data;
-    if (res.code) {
+    const res: baseDef.resp<any> = response.data;
+
+    if (res.code !== undefined) {
       console.log('code', res.code);
-      if (res.code !== '0000') {
+      if (res.code !== responseCode.SUCCESS) {
         if (res.message && res.message !== '') {
           return Promise.reject(res.message);
         } else {
@@ -31,7 +34,6 @@ service.interceptors.response.use(
       }
       return res.data;
     } else {
-      console.log('code none');
       return Promise.reject('unkonw code');
     }
   },
