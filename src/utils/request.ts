@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import responseCode from '@/constant/responseCode';
 import baseDef from '@/api/base.d';
 
@@ -20,9 +20,9 @@ service.interceptors.request.use(
 );
 
 service.interceptors.response.use(
-  (response) => {
+  (response: AxiosResponse) => {
     const res: baseDef.resp<any> = response.data;
-
+    debugger;
     if (res.code !== undefined) {
       console.log('code', res.code);
       if (res.code !== responseCode.SUCCESS) {
@@ -32,6 +32,7 @@ service.interceptors.response.use(
           return Promise.reject('error');
         }
       }
+      debugger;
       return res.data;
     } else {
       return Promise.reject('unkonw code');

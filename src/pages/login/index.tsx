@@ -36,9 +36,12 @@ class Login extends BaseComponentWithStore<{}, IState> {
     this.setState({
       loading: true,
     });
+
     authLogin(req)
       .then((resp) => {
         console.log(resp);
+        // let respR: authDef.authLoginResp = resp.data;
+        // console.log(respR.token);
       })
       .catch((error) => {
         console.log(error);
