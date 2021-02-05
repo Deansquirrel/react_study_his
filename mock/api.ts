@@ -1,7 +1,7 @@
 export default {
   'POST /api/auth/login': (req: any, res: any) => {
     const data = req.body;
-    console.log('POST /api/login', data);
+    console.log('POST /api/login4', data);
     setTimeout(() => {
       const d = { token: 'test token' };
       if (data.username === 'yuansong' && data.password === 'yuansong') {

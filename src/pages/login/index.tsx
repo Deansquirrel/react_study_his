@@ -9,10 +9,6 @@ import { authLogin } from '@/api/auth';
 
 import './index.less';
 
-// const handleLogin = (username: string, password: string) => {
-//   console.log("username: " + username + " | " + "password: " + password);
-// }
-
 interface IState {
   loading: boolean;
 }
@@ -26,9 +22,7 @@ class Login extends BaseComponentWithStore<{}, IState> {
   }
 
   onFinish = (values: { username: any; password: any }) => {
-    console.log('data: ', values.username, values.password);
-
-    let req: authDef.authLoginReq = {
+    const req: authDef.authLoginReq = {
       username: values.username,
       password: values.password,
     };
@@ -40,8 +34,7 @@ class Login extends BaseComponentWithStore<{}, IState> {
     authLogin(req)
       .then((resp) => {
         console.log(resp);
-        // let respR: authDef.authLoginResp = resp.data;
-        // console.log(respR.token);
+        console.log(resp.token);
       })
       .catch((error) => {
         console.log(error);

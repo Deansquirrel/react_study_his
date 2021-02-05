@@ -22,7 +22,6 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   (response: AxiosResponse) => {
     const res: baseDef.resp<any> = response.data;
-    debugger;
     if (res.code !== undefined) {
       console.log('code', res.code);
       if (res.code !== responseCode.SUCCESS) {
@@ -32,7 +31,6 @@ service.interceptors.response.use(
           return Promise.reject('error');
         }
       }
-      debugger;
       return res.data;
     } else {
       return Promise.reject('unkonw code');
