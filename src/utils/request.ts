@@ -23,7 +23,6 @@ service.interceptors.response.use(
   (response: AxiosResponse) => {
     const res: baseDef.resp<any> = response.data;
     if (res.code !== undefined) {
-      console.log('code', res.code);
       if (res.code !== responseCode.SUCCESS) {
         if (res.message && res.message !== '') {
           return Promise.reject(res.message);
@@ -37,7 +36,6 @@ service.interceptors.response.use(
     }
   },
   (error) => {
-    console.log(error.response);
     const res = error.response && error.response.data;
     console.log('error', res);
     //Todo 给出api错误提示

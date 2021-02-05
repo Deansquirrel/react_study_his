@@ -1,13 +1,15 @@
 import React from 'react';
 import BaseComponentWithStore from '@/components/BaseComponentWithStore';
 
-import { Spin, Form, Input, Checkbox, Button } from 'antd';
+import { Spin, Form, Input, Checkbox, Button, message } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 
 import authDef from '@/api/auth.d';
-import { authLogin } from '@/api/auth';
+import { authCheck, authLogin } from '@/api/auth';
 
 import './index.less';
+import localStorageItem from '@/constant/localStorageItem';
+import { history } from 'umi';
 
 interface IState {
   loading: boolean;
@@ -33,10 +35,20 @@ class Login extends BaseComponentWithStore<{}, IState> {
 
     authLogin(req)
       .then((resp) => {
-        console.log(resp);
-        console.log(resp.token);
+        if (resp && resp.id && resp.token && resp.expire) {
+          localStorage.setItem(localStorageItem.TOKEN, resp.token);
+          localStorage.setItem(
+            localStorageItem.TOKEN_EXPIRE,
+            resp.expire.toString(),
+          );
+          history.push('/welcome');
+        } else {
+          //登录异常
+          message.error('登录返回数据结构异常');
+        }
       })
       .catch((error) => {
+        debugger;
         console.log(error);
       })
       .finally(() => {

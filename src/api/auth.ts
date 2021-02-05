@@ -18,11 +18,11 @@ export const authLogin = (
   });
 };
 
-export const authLogin2 = (
-  req: authDef.authLoginReq,
+export const authCheck = (
+  req: authDef.authCheckReq,
 ): Promise<authDef.authLoginResp> => {
   return request<authDef.authLoginResp>({
-    url: REQUEST_URL('/login3'),
+    url: REQUEST_URL('/check'),
     data: req,
     method: 'post',
   });

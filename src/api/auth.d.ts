@@ -4,8 +4,14 @@ declare namespace authDef {
     password: string;
   }
 
+  interface authCheckReq {
+    token: string;
+  }
+
   interface authLoginResp {
     token: string;
+    expire: number;
+    id: number;
   }
 }
 

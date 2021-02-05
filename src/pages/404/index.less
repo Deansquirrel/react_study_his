@@ -1,0 +1,20 @@
+@frm-height: 400px;
+@frm-widht: 365px;
+
+#div-404 {
+  width: @frm-widht;
+  height: @frm-height;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: @frm-height * -0.5;
+  margin-left: @frm-widht * -0.5;
+  background-color: white;
+  border-radius: 5px;
+  padding: 60px 45px 60px 45px;
+}
+
+body :scope {
+  min-width: @frm-widht;
+  min-height: @frm-height;
+}

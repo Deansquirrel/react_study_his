@@ -11,5 +11,16 @@ export default {
       component: '@/pages/login',
       exact: true,
     },
+    {
+      path: '/welcome',
+      component: '@/pages/welcome',
+      wrappers: ['@/wrappers/auth'],
+      exact: true,
+    },
+    {
+      path: '*',
+      component: '@/pages/404',
+      exact: false,
+    },
   ],
 };
