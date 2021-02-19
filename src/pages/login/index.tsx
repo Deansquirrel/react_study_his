@@ -4,12 +4,9 @@ import BaseComponentWithStore from '@/components/BaseComponentWithStore';
 import { Spin, Form, Input, Checkbox, Button, message } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 
-import authDef from '@/api/auth.d';
-import { authCheck, authLogin } from '@/api/auth';
-
 import './index.less';
-import localStorageItem from '@/constant/localStorageItem';
 import { history } from 'umi';
+import authUtils from '@/utils/auth';
 
 interface IState {
   loading: boolean;
@@ -23,39 +20,71 @@ class Login extends BaseComponentWithStore<{}, IState> {
     };
   }
 
-  onFinish = (values: { username: any; password: any }) => {
-    const req: authDef.authLoginReq = {
-      username: values.username,
-      password: values.password,
-    };
-
+  onFinish = async (values: { username: any; password: any }) => {
     this.setState({
       loading: true,
     });
 
-    authLogin(req)
-      .then((resp) => {
-        if (resp && resp.id && resp.token && resp.expire) {
-          localStorage.setItem(localStorageItem.TOKEN, resp.token);
-          localStorage.setItem(
-            localStorageItem.TOKEN_EXPIRE,
-            resp.expire.toString(),
-          );
-          history.push('/welcome');
-        } else {
-          //登录异常
-          message.error('登录返回数据结构异常');
-        }
-      })
-      .catch((error) => {
-        debugger;
-        console.log(error);
-      })
-      .finally(() => {
-        this.setState({
-          loading: false,
-        });
-      });
+    await authUtils.authLogin(values.username, values.password);
+    this.setState({
+      loading: false,
+    });
+    if (authUtils.authLogCheck()) {
+      history.push('/welcome');
+    }
+
+    // const req: authDef.authLoginReq = {
+    //   username: values.username,
+    //   password: values.password,
+    // };
+
+    // this.setState({
+    //   loading: true,
+    // });
+    // var resp: authDef.authLoginResp | undefined = undefined
+    // try {
+    //   resp = await authAPI.authLogin(req)
+    // } catch (error) {
+    //   console.log(error)
+    // }
+    // this.setState({
+    //   loading: false,
+    // });
+
+    // if (resp && resp.id && resp.token && resp.expire) {
+    //   localStorage.setItem(localStorageItem.TOKEN, resp.token);
+    //   localStorage.setItem(
+    //     localStorageItem.TOKEN_EXPIRE,
+    //     resp.expire.toString(),
+    //   );
+    //   history.push('/welcome');
+    // } else {
+    //   //登录异常
+    //   message.error('登录返回数据结构异常');
+    // }
+
+    // authLogin(req)
+    //   .then((resp) => {
+    //     if (resp && resp.id && resp.token && resp.expire) {
+    //       localStorage.setItem(localStorageItem.TOKEN, resp.token);
+    //       localStorage.setItem(
+    //         localStorageItem.TOKEN_EXPIRE,
+    //         resp.expire.toString(),
+    //       );
+    //       history.push('/welcome');
+    //     } else {
+    //       //登录异常
+    //       message.error('登录返回数据结构异常');
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //   })
+    //   .finally(() => {
+    //     this.setState({
+    //       loading: false,
+    //     });
+    //   });
   };
 
   onFinishedFailed = (errorInfo: any) => {
