@@ -22,7 +22,7 @@
   "dependencies": {
     "@ant-design/pro-layout": "^6.5.0",
     "@umijs/preset-react": "1.x",
-    "axios": "^0.21.1",
+    "axios": "^1.6.0",
     "lodash": "^4.17.20",
     "umi": "^3.3.7"
   },
